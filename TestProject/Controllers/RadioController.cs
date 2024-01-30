@@ -9,7 +9,7 @@ using TestProject.Repository.IRepository;
 namespace TestProject.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/data/")]
     public class RadioController : Controller
     {
@@ -22,20 +22,20 @@ namespace TestProject.Controllers
             _context = context;
         }
         [HttpGet("items")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllItems()
         {
-            var users = await _context.Users.ToListAsync();
-            return Ok(users);
+            var radios = await _context.Radios.ToListAsync();
+            return Ok(radios);
         }
 
         [HttpPost("items/add")]
         public async Task<ActionResult<Radio>> PostRadio(Radio radio)
         {
-            var existingRadio = await _context.Radios.FindAsync(radio.);
+            var existingRadio = await _context.Radios.FindAsync(radio.Id);
 
             if (existingRadio != null)
             {
-                return Conflict("Итем уже существует.");
+                return Conflict("Радио уже существует.");
             }
             else
             {
