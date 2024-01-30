@@ -59,7 +59,6 @@ namespace TestProject.Repository
                 User = user
             };
             return Task.FromResult(loginResponseDTO);
-
         }
     }
 }
