@@ -54,17 +54,17 @@ namespace TestProject.Controllers
                 return NotFound("Радио не найдено.");
             }
             else
-            {
-                
+            {                
                 radioToDelete.IsDeleted = false;
                 await _context.SaveChangesAsync();
                 return Ok("Удалено");
             }
         }
-        [HttpPut("items/editItem/{NumberRadio}")]
-        public async Task<ActionResult> UpdateRadio(Radio updatedRadio)
+        [HttpPut("items/editItem/{id}")]
+        public async Task<ActionResult> UpdateRadio(int id,Radio updatedRadio)
         {
-            var existingRadio = await _context.Radios.FindAsync(updatedRadio.NumberRadio);            
+            var existingRadio = await _context.Radios.FindAsync(id);   
+            existingRadio.NumberRadio = updatedRadio.NumberRadio;
             existingRadio.Mine = updatedRadio.Mine;
             existingRadio.WorkerName = updatedRadio.WorkerName;
             existingRadio.UserId = updatedRadio.UserId;
