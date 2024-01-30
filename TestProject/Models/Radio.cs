@@ -9,5 +9,6 @@
         public int UserId { get; set; }
         public string TableNmbrAndPlace { get; set; } = "";
         public bool RadioStatus { get; set; }
+        public bool IsDeleted { get; set; } = true;
     }
 }

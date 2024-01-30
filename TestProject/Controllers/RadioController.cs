@@ -9,7 +9,7 @@ using TestProject.Repository.IRepository;
 namespace TestProject.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/data/")]
     public class RadioController : Controller
     {
@@ -24,14 +24,14 @@ namespace TestProject.Controllers
         [HttpGet("items")]
         public async Task<IActionResult> GetAllItems()
         {
-            var radios = await _context.Radios.ToListAsync();
+            var radios = _context.Radios.Where(radio => radio.IsDeleted).ToList(); ;
             return Ok(radios);
         }
 
         [HttpPost("items/add")]
         public async Task<ActionResult<Radio>> PostRadio(Radio radio)
         {
-            var existingRadio = await _context.Radios.FindAsync(radio.Id);
+            var existingRadio = await _context.Radios.FindAsync(radio.NumberRadio);
 
             if (existingRadio != null)
             {
@@ -55,31 +55,24 @@ namespace TestProject.Controllers
             }
             else
             {
-                _context.Radios.Remove(radioToDelete);
+                
+                radioToDelete.IsDeleted = false;
                 await _context.SaveChangesAsync();
                 return Ok("Удалено");
             }
         }
-        [HttpPut("items/edit/{id}")]
-        public async Task<ActionResult> UpdateRadio(int id, Radio updatedRadio)
+        [HttpPut("items/editItem/{NumberRadio}")]
+        public async Task<ActionResult> UpdateRadio(Radio updatedRadio)
         {
-            var existingRadio = await _context.Radios.FindAsync(id);
-
-            if (existingRadio == null)
-            {
-                return NotFound("Радио не найдено.");
-            }
-            else
-            {
-                existingRadio.NumberRadio = updatedRadio.NumberRadio;
-                existingRadio.Mine = updatedRadio.Mine;
-                existingRadio.WorkerName = updatedRadio.WorkerName;
-                existingRadio.UserId = updatedRadio.UserId;
-                existingRadio.TableNmbrAndPlace = updatedRadio.TableNmbrAndPlace;
-                existingRadio.RadioStatus = updatedRadio.RadioStatus;
-                await _context.SaveChangesAsync();
-                return Ok("Изменено");
-            }
+            var existingRadio = await _context.Radios.FindAsync(updatedRadio.NumberRadio);            
+            existingRadio.Mine = updatedRadio.Mine;
+            existingRadio.WorkerName = updatedRadio.WorkerName;
+            existingRadio.UserId = updatedRadio.UserId;
+            existingRadio.TableNmbrAndPlace = updatedRadio.TableNmbrAndPlace;
+            existingRadio.RadioStatus = updatedRadio.RadioStatus;
+            await _context.SaveChangesAsync();
+            return Ok("Изменено");
+            
         }
     }
 }
