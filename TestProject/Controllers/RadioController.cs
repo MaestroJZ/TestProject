@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestProject.Data;
+using TestProject.Models;
 using TestProject.Models.Dto;
 using TestProject.Repository.IRepository;
 
@@ -28,19 +29,20 @@ namespace TestProject.Controllers
         }
 
         [HttpPost("items/add")]
-        [HttpPost("NewProduct")]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Radio>> PostRadio(Radio radio)
         {
-            var category = await _dbContext.Categories.FindAsync(product.CategoryId);
-            if (category == null)
-            {
-                return BadRequest("The category does not exist.");
-            }
+            var existingRadio = await _context.Radios.FindAsync(radio.);
 
-            //extra.CategoryId = category.Id;
-            _dbContext.Products.Add(product);
-            await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+            if (existingRadio != null)
+            {
+                return Conflict("Итем уже существует.");
+            }
+            else
+            {
+                _context.Radios.Add(radio);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
         }
     }
 }
