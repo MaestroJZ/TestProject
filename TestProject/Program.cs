@@ -17,6 +17,7 @@ namespace TestProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            
 
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
@@ -41,6 +42,7 @@ namespace TestProject
                 };               
             });
             builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
             builder.Services.AddSwaggerGen(options =>
@@ -72,16 +74,15 @@ namespace TestProject
             });
 
             var app = builder.Build();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();     
-            app.UseSession();
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API" +
-                    " V1");
-            });
+            app.UseSession();        
             app.MapControllers();
             app.Run();
         }
